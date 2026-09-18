@@ -72,7 +72,7 @@ def diann_call(mass_spec_folder, fasta, result_folder, threads):
     if not os.path.isdir(mass_spec_folder):
         return mass_spec_folder, "folder not found"
 
-    # build “clean” name & create output dir
+    # clean name from mass spec folder & make output dir
     mass_spec_folder_no_space_no_d = mass_spec_folder.replace(".d", "").replace("BacLandscape_", "").split("/")[-1]
     rel_path = f"{result_folder}/{mass_spec_folder_no_space_no_d}"
     os.makedirs(f"{result_folder}/{mass_spec_folder_no_space_no_d}", exist_ok=True)
@@ -83,7 +83,7 @@ def diann_call(mass_spec_folder, fasta, result_folder, threads):
     except Exception as e:
         return mass_spec_folder, f"command_1 failed: {e}"
 
-    # run DIA‑NN command 2 to save spec library
+    # DIA‑NN command 2 to save spec library
     try:
         command_2(rel_path, mass_spec_folder_no_space_no_d, threads)
     except Exception as e:
@@ -96,7 +96,7 @@ def zip_folders():
 
 def main():
 
-    # Get locations for the excel sheet and fast files 
+    # Provide locations for the excel sheet and fasta files 
 
     pwd = os.getcwd()
     path_to_descriptor = os.path.join(pwd, "proteome_descript_199.xlsx") # sample to fasta info
@@ -153,7 +153,7 @@ def main():
 
     print("All DIA-NN pipelines completed.")
 
-    ### Copy .quant files to result folders and zip .d files for completion
+    # Copy .quant files to result folders and zip .d files for completion
 
     for folder in foldernames_d:
 
