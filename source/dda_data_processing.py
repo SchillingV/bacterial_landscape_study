@@ -98,10 +98,10 @@ def collect_msfragger_outputs(
 
     d_parent = d_folder.parent
 
-    # --- 1) find & move pepXML ---
+    # find & move pepXML
     pepxmls = sorted(d_parent.glob(f"{d_folder.stem}*.pepXML"))
     if not pepxmls:
-        # very rare: try inside the .d itself
+        # very rare: try inside the .d itself if misplacement
         pepxmls = sorted(d_folder.glob("*.pepXML"))
     if not pepxmls:
         print(f"[WARN] No pepXML found for {d_folder.stem} in {d_parent} or inside {d_folder}")
@@ -116,7 +116,7 @@ def collect_msfragger_outputs(
         pep_src.replace(pep_dst)
     pep_name = pep_dst.name
 
-    # --- 2) find & move matching *_uncalibrated.mzML ---
+    # find & move matching *_uncalibrated.mzML 
     mzml_src = pep_src.with_name(f"{pep_src.stem}_uncalibrated.mzML")
     mzml_dst = None
     if not mzml_src.exists():
@@ -131,7 +131,7 @@ def collect_msfragger_outputs(
     else:
         print(f"[WARN] No spectra mzML found next to pepXML. Expected {pep_src.stem}_uncalibrated.mzML")
 
-    # --- 3) create alias <pep.stem>.mzML -> *_uncalibrated.mzML ---
+    # create alias <pep.stem>.mzML -> *_uncalibrated.mzML ---
     mzml_alias = None
     if mzml_dst and mzml_dst.exists():
         mzml_alias = sample_dir / f"{pep_src.stem}.mzML"
@@ -145,7 +145,7 @@ def collect_msfragger_outputs(
                 shutil.copy2(str(mzml_dst), str(mzml_alias))
                 print(f"[COPY] {mzml_alias.name} (symlink failed: {e})")
 
-    # --- 4) handle side files (.mzBIN, .tsv) from the .d parent ---
+    # handle other files (.mzBIN, .tsv) from the .d parent directory
     for ext in (".mzBIN", ".tsv"):
         src = d_parent / f"{d_folder.stem}{ext}"
         if not src.exists():
@@ -293,7 +293,7 @@ def ms_call(mass_spec_folder: str, fasta: str, result_root: str, threads: int, p
     except Exception as e:
         return mass_spec_folder, f"MSFragger failed: {e}"
 
-    # >>> INSERTED: collect exact pepXML & matching mzML into sample_dir
+    # collect and match pepXML and mzML into sample_dir
     pep_name, mzml_alias = collect_msfragger_outputs(sample_dir, d_folder, side_files="move")
     if not pep_name:
         return mass_spec_folder, f"No pepXML found around {d_folder}"
@@ -316,7 +316,7 @@ def ms_call(mass_spec_folder: str, fasta: str, result_root: str, threads: int, p
 def main():
     pwd = Path(os.getcwd())
 
-    # Input files and directories
+    # Input files and directories: PLease enter the paths for re-analysis here
     path_to_descriptor = pwd / "scientific_data_processing_files" / "proteome_descript_199_updated.xlsx" # connects the samples and fasta
     foldername = input("Please enter the folder where the .d files are located: ").strip()
     path_to_d = (pwd / foldername).resolve()
@@ -369,7 +369,7 @@ def main():
     #samples = [] # rerun failed samples
     print(f"[INFO] Queued samples: {len(samples)}")
 
-    # Run in parallel
+    # Run samples in parallel
     errors = []
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = {
