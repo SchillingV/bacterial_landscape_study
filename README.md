@@ -3,4 +3,4 @@ This repository contains the metadata to the PRIDE data set: PXD079235
 
 Structure of the repo:
 
-<img width="585" height="257" alt="folder_structure" src="https://github.com/user-attachments/assets/6c4b053d-b729-40e1-9fff-e3aa3dee69cc" />
+<img width="904" height="405" alt="repo_tree" src="https://github.com/user-attachments/assets/8935eb35-5408-42c5-8b84-2e73c9912fdd" />
